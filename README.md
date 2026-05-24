@@ -1,0 +1,1 @@
+# my-otel-k8s-setup
