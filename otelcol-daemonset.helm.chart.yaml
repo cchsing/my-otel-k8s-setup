@@ -1,0 +1,41 @@
+mode: daemonset
+namespaceOverride: otel-test-1
+image:
+  repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib"
+command:
+  name: "otelcol-contrib"
+hostNetwork: true
+
+presets:
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: true
+  kubernetesAttributes:
+    enabled: true
+  kubeletMetrics:
+    enabled: true
+  hostMetrics:
+    enabled: true
+
+config:
+  receivers:
+    kubeletstats:
+      auth_type: serviceAccount
+      insecure_skip_verify: true
+  exporters:
+    splunk_hec:
+      token: "6e8749fe-1fcc-4bd6-aebd-762871effc72"
+      endpoint: "https://192.168.1.102:8088/services/collector"
+      tls:
+        insecure_skip_verify: true
+  service:
+    pipelines:
+      logs:
+        exporters:
+          - splunk_hec
+      traces:
+        exporters:
+          - splunk_hec
+      metrics:
+        exporters:
+          - splunk_hec

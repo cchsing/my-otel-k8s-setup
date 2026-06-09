@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: daemonset-otelcol-collector
+  namespace: opentelemetry
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: daemonset-otelcol-collector
+  namespace: opentelemetry
+subjects:
+  - kind: ServiceAccount
+    name: daemonset-otelcol-collector
+    namespace: opentelemetry
+roleRef:
+  kind: ClusterRole
+  name: daemonset-otelcol-collector
+  apiGroup: rbac.authorization.k8s.io

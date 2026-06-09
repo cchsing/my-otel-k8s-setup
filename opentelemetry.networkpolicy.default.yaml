@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-pods
+  namespace: opentelemetry # Change to your target namespace if needed
+spec:
+  podSelector: {} # Selects all pods in this namespace
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - {} # Empty block allows all incoming traffic from all namespaces
+  egress:
+    - {} # Empty block allows all outgoing traffic to all destinations

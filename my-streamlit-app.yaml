@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-streamlit-app
+  namespace: opentelemetry
+  labels:
+    app: streamlit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit
+  template:
+    metadata:
+      labels:
+        app: streamlit
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: "false"
+    spec:
+      containers:
+        - name: my-streamlit-app
+          image: chchong/my-streamlit-app:0.0.5
+          imagePullPolicy: Always
+          env:
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          ports:
+            - containerPort: 8501
+          resources:
+            limits:
+              cpu: 1
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 745Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-service
+  namespace: opentelemetry
+spec:
+  type: LoadBalancer
+  selector:
+    app: streamlit
+  ports:
+    - name: streamlit-port
+      protocol: TCP
+      port: 80
+      targetPort: 8501
